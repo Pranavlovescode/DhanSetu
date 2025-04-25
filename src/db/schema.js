@@ -1,0 +1,17 @@
+// import { integer, text, uuid } from "drizzle-orm/gel-core";
+import { pgSchema, pgTable, varchar ,uuid,text,integer} from "drizzle-orm/pg-core";
+
+export const userSchema = pgSchema('userSchema')
+
+export const genders = userSchema.enum('gender',['male','female','others'])
+export const roles = userSchema.enum('role',['user','employee','admin'])
+
+export const users = pgTable('users', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  full_name: varchar('full_name',{length:500}).notNull(),
+  phone: varchar('phone', { length: 256 }),
+  age:integer('age'),
+  email:text('email'),
+  role:roles('role').default('user'),
+  gender:genders('gender').default('others')
+})
