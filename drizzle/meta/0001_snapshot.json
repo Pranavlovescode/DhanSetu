@@ -1,0 +1,153 @@
+{
+  "id": "bd945e08-e459-49bf-97f7-64d4ecf262e5",
+  "prevId": "d0220df6-c510-47f1-b70f-d55929933854",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.userBankAccounts": {
+      "name": "userBankAccounts",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "pan_number": {
+          "name": "pan_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "balance": {
+          "name": "balance",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "account_holder": {
+          "name": "account_holder",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "userBankAccounts_account_holder_users_id_fk": {
+          "name": "userBankAccounts_account_holder_users_id_fk",
+          "tableFrom": "userBankAccounts",
+          "tableTo": "users",
+          "columnsFrom": [
+            "account_holder"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "age": {
+          "name": "age",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "name": "role",
+          "type": "role",
+          "typeSchema": "userSchema",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'user'"
+        },
+        "gender": {
+          "name": "gender",
+          "type": "gender",
+          "typeSchema": "userSchema",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'others'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "userSchema.gender": {
+      "name": "gender",
+      "schema": "userSchema",
+      "values": [
+        "male",
+        "female",
+        "others"
+      ]
+    },
+    "userSchema.role": {
+      "name": "role",
+      "schema": "userSchema",
+      "values": [
+        "user",
+        "employee",
+        "admin"
+      ]
+    }
+  },
+  "schemas": {
+    "userSchema": "userSchema"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
