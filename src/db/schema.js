@@ -9,11 +9,11 @@ export const roles = userSchema.enum('role',['user','employee','admin'])
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
   full_name: varchar('full_name',{length:500}).notNull(),
-  phone: varchar('phone', { length: 256 }),
-  age:integer('age'),
-  email:text('email'),
-  role:roles('role').default('user'),
-  gender:genders('gender').default('others')
+  phone: integer('phone_number').notNull(),
+  age:integer('age').notNull(),
+  email:text('email').unique(),
+  role:roles('role').default('user').notNull(),
+  gender:genders('gender').default('others').notNull()
 })
 
 export const userBankAccounts = pgTable('user_bank_accounts',{
@@ -28,5 +28,6 @@ export const userTransactions = pgTable('user_transactions',{
   transaction_id: uuid('transaction_id').defaultRandom().primaryKey(),
   sender:uuid().references(()=>users.id),
   receiver:uuid().references(()=>users.id),
-  timestamp:timestamp().defaultNow()
+  timestamp:timestamp().defaultNow(),
+  amount:integer('amount').notNull().default(0)
 })
