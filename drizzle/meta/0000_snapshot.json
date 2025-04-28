@@ -1,11 +1,11 @@
 {
-  "id": "d0220df6-c510-47f1-b70f-d55929933854",
+  "id": "11538526-7788-48d2-b9cc-b44f5460ccc3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.users": {
-      "name": "users",
+    "public.user_bank_accounts": {
+      "name": "user_bank_accounts",
       "schema": "",
       "columns": {
         "id": {
@@ -15,15 +15,140 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
+        "pan_number": {
+          "name": "pan_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "balance": {
+          "name": "balance",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "account_holder": {
+          "name": "account_holder",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_bank_accounts_account_holder_users_id_fk": {
+          "name": "user_bank_accounts_account_holder_users_id_fk",
+          "tableFrom": "user_bank_accounts",
+          "tableTo": "users",
+          "columnsFrom": [
+            "account_holder"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.user_transactions": {
+      "name": "user_transactions",
+      "schema": "",
+      "columns": {
+        "transaction_id": {
+          "name": "transaction_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "sender": {
+          "name": "sender",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receiver": {
+          "name": "receiver",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "timestamp": {
+          "name": "timestamp",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "amount": {
+          "name": "amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_transactions_sender_users_id_fk": {
+          "name": "user_transactions_sender_users_id_fk",
+          "tableFrom": "user_transactions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "sender"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "user_transactions_receiver_users_id_fk": {
+          "name": "user_transactions_receiver_users_id_fk",
+          "tableFrom": "user_transactions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "receiver"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
         "full_name": {
           "name": "full_name",
           "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true
         },
-        "phone": {
-          "name": "phone",
-          "type": "varchar(256)",
+        "phone_number": {
+          "name": "phone_number",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -42,7 +167,7 @@
         "role": {
           "name": "role",
           "type": "role",
-          "typeSchema": "userSchema",
+          "typeSchema": "userEnums",
           "primaryKey": false,
           "notNull": false,
           "default": "'user'"
@@ -50,7 +175,7 @@
         "gender": {
           "name": "gender",
           "type": "gender",
-          "typeSchema": "userSchema",
+          "typeSchema": "userEnums",
           "primaryKey": false,
           "notNull": false,
           "default": "'others'"
@@ -59,25 +184,33 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     }
   },
   "enums": {
-    "userSchema.gender": {
+    "userEnums.gender": {
       "name": "gender",
-      "schema": "userSchema",
+      "schema": "userEnums",
       "values": [
         "male",
         "female",
         "others"
       ]
     },
-    "userSchema.role": {
+    "userEnums.role": {
       "name": "role",
-      "schema": "userSchema",
+      "schema": "userEnums",
       "values": [
         "user",
         "employee",
@@ -86,7 +219,7 @@
     }
   },
   "schemas": {
-    "userSchema": "userSchema"
+    "userEnums": "userEnums"
   },
   "sequences": {},
   "roles": {},

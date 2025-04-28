@@ -7,10 +7,10 @@ const db = drizzle(process.env.DATABASE_URL)
 
 export async function POST(request){
     try {
-        const {fullName, email} = await request.json();
+        const {fullName, email,id} = await request.json();
         
         // Validate inputs
-        if (!fullName || !email) {
+        if (!fullName || !email || !id) {
             return NextResponse.json(
                 { error: "Full name and email are required" },
                 { status: 400 }
@@ -18,7 +18,7 @@ export async function POST(request){
         }
         
         const newUser = await db.insert(schema.users)
-            .values({full_name: fullName, email: email})
+            .values({full_name: fullName, email: email,id:id})
             .returning();
 
         return NextResponse.json({ user: newUser }, { status: 201 });
