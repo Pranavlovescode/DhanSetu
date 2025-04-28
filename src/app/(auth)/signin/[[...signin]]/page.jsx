@@ -5,7 +5,7 @@ import { SignIn } from '@clerk/nextjs'
 export default function Page() {
   
   return (
-    <div className='mx-auto'>
+    <div className='flex items-center justify-center h-screen'>
         <SignIn />
     </div>
   )

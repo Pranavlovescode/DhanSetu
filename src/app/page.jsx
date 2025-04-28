@@ -1,15 +1,31 @@
-'use client'
+"use client";
 import { Button } from "@/components/ui/button";
+import { Auth } from "@/utils/apis/auth";
 import { SignOutButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useEffect } from "react";
 
 export default function Home() {
-  const {user,isSignedIn} = useUser()
-  console.log(user)
-  useEffect(()=>{
-    
-  },[isSignedIn])
+  const { user, isSignedIn } = useUser();
+  console.log(user);
+  useEffect(() => {
+    const saveUser = async () => {
+      if (isSignedIn && user) {
+        // setIsLoading(true);
+        const response = await Auth.signup(
+          user.fullName,
+          user.primaryEmailAddress.emailAddress,
+          user.id
+        );
+        if (response) {
+          // setIsLoading(false);
+          console.log("api response", response);
+          // router.push("/");
+        }
+      }
+    };
+    saveUser();
+  }, [isSignedIn, user]);
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
