@@ -8,6 +8,13 @@
       "when": 1745845150590,
       "tag": "0000_chilly_prima",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1746019783547,
+      "tag": "0001_flimsy_goblin_queen",
+      "breakpoints": true
     }
   ]
 }

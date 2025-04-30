@@ -1,0 +1,1 @@
+ALTER TABLE "user_bank_accounts" RENAME COLUMN "id" TO "account_id";

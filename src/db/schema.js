@@ -17,7 +17,7 @@ export const users = pgTable('users', {
 })
 
 export const userBankAccounts = pgTable('user_bank_accounts',{
-  id: uuid('id').defaultRandom().primaryKey(),
+  account_id: uuid('account_id').defaultRandom().primaryKey(),
   pan_number:text('pan_number'),
   balance:integer('balance').default(0),
   account_holder:text().references(()=>users.id)
