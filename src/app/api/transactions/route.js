@@ -1,7 +1,7 @@
 import * as schema from "@/db/schema";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { NextRequest, NextResponse } from "next/server";
-import { auth, currentUser, currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { and, eq, or, sql } from "drizzle-orm";
 
 const db = drizzle(process.env.DATABASE_URL);
@@ -10,8 +10,8 @@ export async function GET(request) {
   try {
     const senderId = request.nextUrl.searchParams.get("senderId");
     console.log("sender id", senderId);
-    const currentUser = await currentUser();
-    if (!currentUser) {
+    const current_user = await currentUser();
+    if (!current_user) {
       console.log("not authorized");
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     } else {
@@ -51,9 +51,9 @@ export async function POST(request) {
 
     console.log("senderId", senderId, "receiverId", receiverId);
 
-    const currentUser = await currentUser();
+    const current_user = await currentUser();
 
-    if (!currentUser) {
+    if (!current_user) {
       console.log("not authorized");
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     } else {
