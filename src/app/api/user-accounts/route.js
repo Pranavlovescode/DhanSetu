@@ -17,7 +17,8 @@ export async function POST(request) {
         .select()
         .from(schema.userBankAccounts)
         .where(eq(schema.userBankAccounts.account_holder, current_user.id));
-      if (existing_account) {
+      console.log(existing_account)
+      if (existing_account.length!=0) {
         return NextResponse.json(
           { message: "Account already exists for current user" },
           { status: 400 }
@@ -28,7 +29,7 @@ export async function POST(request) {
         balance: balance,
         account_holder: current_user.id,
         pan_number: pan_number,
-      });
+      }).returning();
       console.log("account created", account);
       return NextResponse.json(
         { message: "Account created successfully", account },
