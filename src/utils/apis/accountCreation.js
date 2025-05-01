@@ -19,4 +19,20 @@ export const UserAccountCreation = {
       throw error.response.data.message;
     }
   },
+  getCurrentUserAccount:async(user_id)=>{
+    try {
+      const response = await axios.get('/api/user-accounts',{
+        headers:{
+          'Content-Type':"application/json"
+        },
+        params:{
+          user:user_id
+        },
+        withCredentials:true
+      })
+      return response;
+    } catch (error) {
+      throw error.response.data.message
+    }
+  }
 };
