@@ -26,6 +26,7 @@ export const userBankAccounts = pgTable('user_bank_accounts',{
 
 export const userTransactions = pgTable('user_transactions',{
   transaction_id: uuid('transaction_id').defaultRandom().primaryKey(),
+  transaction_name:text('transaction_name').default(''),
   sender:text().references(()=>users.id),
   receiver:text().references(()=>users.id),
   timestamp:timestamp().defaultNow(),
