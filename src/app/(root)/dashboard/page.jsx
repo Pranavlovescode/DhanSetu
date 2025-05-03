@@ -77,9 +77,9 @@ function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
+    <div className="flex flex-col min-h-screen bg-black text-white">
       {/* Header */}
-      <header className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10">
+      <header className="border-b border-border/40 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/60 sticky top-0 z-10">
         <div className="container max-w-6xl mx-auto flex h-16 items-center justify-between py-4">
           <h1 className="text-2xl font-bold">DhanSetu</h1>
           <div className="flex items-center gap-4">
@@ -107,7 +107,7 @@ function Dashboard() {
             <div className="space-y-8">
               {/* Balance Summary */}
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="bg-card text-card-foreground overflow-hidden">
+                <Card className="bg-black text-card-white overflow-hidden border border-border/40">
                   <CardHeader className="pb-2">
                     <CardTitle>Account Balance</CardTitle>
                     <CardDescription>Your current available balance</CardDescription>
@@ -117,11 +117,11 @@ function Dashboard() {
                       {userAccount ? formatCurrency(userAccount.balance) : '₹0'}
                     </div>
                   </CardContent>
-                  <div className="h-2 bg-primary/20">
+                  {/* <div className="h-2 bg-primary/20">
                     <div className="h-full bg-primary w-2/3"></div>
-                  </div>
+                  </div> */}
                 </Card>
-                <Card>
+                <Card className={'bg-black text-card-white border-border/40'}>
                   <CardHeader className="pb-2">
                     <CardTitle>Monthly Spending</CardTitle>
                     <CardDescription>Your spending trend</CardDescription>
@@ -129,14 +129,14 @@ function Dashboard() {
                   <CardContent className="pb-4">
                     <div className="text-3xl font-bold">₹15,245</div>
                     <p className="text-xs text-muted-foreground mt-2">
-                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20">
+                      <Badge className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20">
                         -12%
                       </Badge>
                       <span className="ml-1">from last month</span>
                     </p>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className={'bg-black text-card-white border-border/40'}>
                   <CardHeader className="pb-2">
                     <CardTitle>Savings Goal</CardTitle>
                     <CardDescription>Travel fund progress</CardDescription>
@@ -152,7 +152,7 @@ function Dashboard() {
               </div>
 
               {/* Transactions */}
-              <Card>
+              <Card className={'bg-black text-card-white border-border/40'}>
                 <CardHeader className="pb-4">
                   <CardTitle>Recent Transactions</CardTitle>
                   <CardDescription>Your latest account activities</CardDescription>
@@ -168,7 +168,7 @@ function Dashboard() {
                       <ScrollArea className="h-[320px] px-1">
                         <div className="space-y-2">
                           {transactions.map((transaction) => (
-                            <div key={transaction.id} className="flex items-center justify-between p-3 rounded-md hover:bg-accent transition-colors">
+                            <div key={transaction.id} className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors">
                               <div className="flex items-center gap-3">
                                 <div className={`p-2 rounded-full ${transaction.type === 'credit' ? 'bg-emerald-500/10' : 'bg-rose-500/10'}`}>
                                   {transaction.type === 'credit' ? 
@@ -192,7 +192,7 @@ function Dashboard() {
                       <ScrollArea className="h-[320px] px-1">
                         <div className="space-y-2">
                           {transactions.filter(t => t.type === 'credit').map((transaction) => (
-                            <div key={transaction.id} className="flex items-center justify-between p-3 rounded-md hover:bg-accent transition-colors">
+                            <div key={transaction.id} className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors">
                               <div className="flex items-center gap-3">
                                 <div className="p-2 rounded-full bg-emerald-500/10">
                                   <ArrowRightIcon className="h-4 w-4 text-emerald-500" />
@@ -212,7 +212,7 @@ function Dashboard() {
                       <ScrollArea className="h-[320px] px-1">
                         <div className="space-y-2">
                           {transactions.filter(t => t.type === 'debit').map((transaction) => (
-                            <div key={transaction.id} className="flex items-center justify-between p-3 rounded-md hover:bg-accent transition-colors">
+                            <div key={transaction.id} className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors">
                               <div className="flex items-center gap-3">
                                 <div className="p-2 rounded-full bg-rose-500/10">
                                   <ArrowLeftIcon className="h-4 w-4 text-rose-500" />
@@ -232,7 +232,7 @@ function Dashboard() {
                 </CardContent>
                 <CardFooter className="border-t pt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
                   <p className="text-sm text-muted-foreground">Showing 5 of 24 transactions</p>
-                  <Button variant="outline" size="sm">View All Transactions</Button>
+                  <Button className='hover:bg-white/20 hover:text-white text-black' variant={'secondary'} size="sm">View All Transactions</Button>
                 </CardFooter>
               </Card>
 
@@ -240,27 +240,27 @@ function Dashboard() {
 
             {/* Sidebar */}
             <div className="space-y-8">
-              <Card>
+              <Card className={'bg-black text-black border-border/40'}>
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-center">Quick Actions</CardTitle>
+                  <CardTitle className="text-center text-white">Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button className="w-full justify-start hover:bg-white/20 hover:text-white" variant="secondary">
                     <WalletIcon className="mr-2 h-4 w-4" /> Transfer Money
                   </Button>
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button className="w-full justify-start hover:bg-white/20 hover:text-white" variant="secondary">
                     <PlusIcon className="mr-2 h-4 w-4" /> Add Funds
                   </Button>
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button className="w-full justify-start hover:bg-white/20 hover:text-white" variant="secondary">
                     <CreditCardIcon className="mr-2 h-4 w-4" /> Pay Bills
                   </Button>
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button className="w-full justify-start hover:bg-white/20 hover:text-white" variant="secondary">
                     <TrendingUpIcon className="mr-2 h-4 w-4" /> Investments
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className={'bg-black text-card-white border-border/40'}>
                 <CardHeader className="pb-4">
                   <CardTitle className="text-center">Spending Breakdown</CardTitle>
                 </CardHeader>
