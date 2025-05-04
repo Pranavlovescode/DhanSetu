@@ -1,9 +1,16 @@
-'use client'
+"use client";
 
-import { UserAccountCreation } from '@/utils/apis/accountCreation';
-import { useUser } from '@clerk/nextjs'
-import React, { useEffect, useState } from 'react'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { UserAccountCreation } from "@/utils/apis/accountCreation";
+import { useUser } from "@clerk/nextjs";
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,18 +18,62 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
-import { BellIcon, WalletIcon, ArrowRightIcon, ArrowLeftIcon, PlusIcon, CreditCardIcon, BarChart3Icon, UsersIcon, PieChartIcon, TrendingUpIcon, SettingsIcon, HelpCircleIcon } from 'lucide-react';
+import {
+  BellIcon,
+  WalletIcon,
+  ArrowRightIcon,
+  ArrowLeftIcon,
+  PlusIcon,
+  CreditCardIcon,
+  BarChart3Icon,
+  UsersIcon,
+  PieChartIcon,
+  TrendingUpIcon,
+  SettingsIcon,
+  HelpCircleIcon,
+} from "lucide-react";
+import Link from "next/link";
 
 function Dashboard() {
   const { isSignedIn, user } = useUser();
   const [userAccount, setUserAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState([
-    { id: 1, type: 'credit', description: 'Salary Deposit', amount: 25000, date: '30 Apr 2025' },
-    { id: 2, type: 'debit', description: 'Amazon Purchase', amount: 1299, date: '29 Apr 2025' },
-    { id: 3, type: 'debit', description: 'Netflix Subscription', amount: 199, date: '28 Apr 2025' },
-    { id: 4, type: 'credit', description: 'Refund', amount: 500, date: '27 Apr 2025' },
-    { id: 5, type: 'debit', description: 'Restaurant Payment', amount: 799, date: '25 Apr 2025' }
+    {
+      id: 1,
+      type: "credit",
+      description: "Salary Deposit",
+      amount: 25000,
+      date: "30 Apr 2025",
+    },
+    {
+      id: 2,
+      type: "debit",
+      description: "Amazon Purchase",
+      amount: 1299,
+      date: "29 Apr 2025",
+    },
+    {
+      id: 3,
+      type: "debit",
+      description: "Netflix Subscription",
+      amount: 199,
+      date: "28 Apr 2025",
+    },
+    {
+      id: 4,
+      type: "credit",
+      description: "Refund",
+      amount: 500,
+      date: "27 Apr 2025",
+    },
+    {
+      id: 5,
+      type: "debit",
+      description: "Restaurant Payment",
+      amount: 799,
+      date: "25 Apr 2025",
+    },
   ]);
 
   useEffect(() => {
@@ -34,9 +85,11 @@ function Dashboard() {
   const fetchUserAccount = async () => {
     try {
       setLoading(true);
-      const response = await UserAccountCreation.getCurrentUserAccount(user?.id);
+      const response = await UserAccountCreation.getCurrentUserAccount(
+        user?.id
+      );
       if (response.status == 200) {
-        console.log('user account found', response.data.user_account[0]);
+        console.log("user account found", response.data.user_account[0]);
         setUserAccount(response.data.user_account[0]);
       }
     } catch (error) {
@@ -48,20 +101,20 @@ function Dashboard() {
 
   // Format currency to Indian Rupees
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       maximumFractionDigits: 0,
     }).format(amount);
   };
 
   // Get the user's initials for avatar fallback
   const getInitials = () => {
-    if (!user?.fullName) return 'U';
+    if (!user?.fullName) return "U";
     return user.fullName
-      .split(' ')
-      .map(name => name[0])
-      .join('')
+      .split(" ")
+      .map((name) => name[0])
+      .join("")
       .toUpperCase();
   };
 
@@ -69,7 +122,9 @@ function Dashboard() {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <div className="space-y-4 text-center">
-          <h2 className="text-2xl font-bold text-foreground">Loading your account...</h2>
+          <h2 className="text-2xl font-bold text-foreground">
+            Loading your account...
+          </h2>
           <Progress value={80} className="w-60 mx-auto" />
         </div>
       </div>
@@ -85,16 +140,23 @@ function Dashboard() {
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" className="relative">
               <BellIcon className="size-5" />
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center">3</Badge>
+              <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center">
+                3
+              </Badge>
             </Button>
             <div className="flex items-center gap-2">
               <Avatar>
-                <AvatarImage src={user?.imageUrl} alt={user?.fullName || 'User'} />
+                <AvatarImage
+                  src={user?.imageUrl}
+                  alt={user?.fullName || "User"}
+                />
                 <AvatarFallback>{getInitials()}</AvatarFallback>
               </Avatar>
               <div>
                 <p className="text-sm font-medium">{user?.fullName}</p>
-                <p className="text-xs text-muted-foreground">{userAccount?.account_id?.substring(0, 8)}...</p>
+                <p className="text-xs text-muted-foreground">
+                  {userAccount?.account_id?.substring(0, 8)}...
+                </p>
               </div>
             </div>
           </div>
@@ -110,18 +172,20 @@ function Dashboard() {
                 <Card className="bg-black text-card-white overflow-hidden border border-border/40">
                   <CardHeader className="pb-2">
                     <CardTitle>Account Balance</CardTitle>
-                    <CardDescription>Your current available balance</CardDescription>
+                    <CardDescription>
+                      Your current available balance
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="pb-4">
                     <div className="text-3xl font-bold">
-                      {userAccount ? formatCurrency(userAccount.balance) : '₹0'}
+                      {userAccount ? formatCurrency(userAccount.balance) : "₹0"}
                     </div>
                   </CardContent>
                   {/* <div className="h-2 bg-primary/20">
                     <div className="h-full bg-primary w-2/3"></div>
                   </div> */}
                 </Card>
-                <Card className={'bg-black text-card-white border-border/40'}>
+                <Card className={"bg-black text-card-white border-border/40"}>
                   <CardHeader className="pb-2">
                     <CardTitle>Monthly Spending</CardTitle>
                     <CardDescription>Your spending trend</CardDescription>
@@ -136,7 +200,7 @@ function Dashboard() {
                     </p>
                   </CardContent>
                 </Card>
-                <Card className={'bg-black text-card-white border-border/40'}>
+                <Card className={"bg-black text-card-white border-border/40"}>
                   <CardHeader className="pb-2">
                     <CardTitle>Savings Goal</CardTitle>
                     <CardDescription>Travel fund progress</CardDescription>
@@ -146,16 +210,20 @@ function Dashboard() {
                       65<span className="text-lg font-normal">%</span>
                     </div>
                     <Progress value={65} className="mt-3" />
-                    <p className="text-xs text-muted-foreground mt-2">₹32,500 of ₹50,000</p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      ₹32,500 of ₹50,000
+                    </p>
                   </CardContent>
                 </Card>
               </div>
 
               {/* Transactions */}
-              <Card className={'bg-black text-card-white border-border/40'}>
+              <Card className={"bg-black text-card-white border-border/40"}>
                 <CardHeader className="pb-4">
                   <CardTitle>Recent Transactions</CardTitle>
-                  <CardDescription>Your latest account activities</CardDescription>
+                  <CardDescription>
+                    Your latest account activities
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="all" className="w-full">
@@ -168,20 +236,42 @@ function Dashboard() {
                       <ScrollArea className="h-[320px] px-1">
                         <div className="space-y-2">
                           {transactions.map((transaction) => (
-                            <div key={transaction.id} className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors">
+                            <div
+                              key={transaction.id}
+                              className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors"
+                            >
                               <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-full ${transaction.type === 'credit' ? 'bg-emerald-500/10' : 'bg-rose-500/10'}`}>
-                                  {transaction.type === 'credit' ? 
-                                    <ArrowRightIcon className="h-4 w-4 text-emerald-500" /> : 
-                                    <ArrowLeftIcon className="h-4 w-4 text-rose-500" />}
+                                <div
+                                  className={`p-2 rounded-full ${
+                                    transaction.type === "credit"
+                                      ? "bg-emerald-500/10"
+                                      : "bg-rose-500/10"
+                                  }`}
+                                >
+                                  {transaction.type === "credit" ? (
+                                    <ArrowRightIcon className="h-4 w-4 text-emerald-500" />
+                                  ) : (
+                                    <ArrowLeftIcon className="h-4 w-4 text-rose-500" />
+                                  )}
                                 </div>
                                 <div>
-                                  <p className="text-sm font-medium">{transaction.description}</p>
-                                  <p className="text-xs text-muted-foreground">{transaction.date}</p>
+                                  <p className="text-sm font-medium">
+                                    {transaction.description}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {transaction.date}
+                                  </p>
                                 </div>
                               </div>
-                              <p className={`font-medium ${transaction.type === 'credit' ? 'text-emerald-500' : 'text-rose-500'}`}>
-                                {transaction.type === 'credit' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                              <p
+                                className={`font-medium ${
+                                  transaction.type === "credit"
+                                    ? "text-emerald-500"
+                                    : "text-rose-500"
+                                }`}
+                              >
+                                {transaction.type === "credit" ? "+" : "-"}
+                                {formatCurrency(transaction.amount)}
                               </p>
                             </div>
                           ))}
@@ -191,78 +281,133 @@ function Dashboard() {
                     <TabsContent value="incoming">
                       <ScrollArea className="h-[320px] px-1">
                         <div className="space-y-2">
-                          {transactions.filter(t => t.type === 'credit').map((transaction) => (
-                            <div key={transaction.id} className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors">
-                              <div className="flex items-center gap-3">
-                                <div className="p-2 rounded-full bg-emerald-500/10">
-                                  <ArrowRightIcon className="h-4 w-4 text-emerald-500" />
+                          {transactions
+                            .filter((t) => t.type === "credit")
+                            .map((transaction) => (
+                              <div
+                                key={transaction.id}
+                                className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="p-2 rounded-full bg-emerald-500/10">
+                                    <ArrowRightIcon className="h-4 w-4 text-emerald-500" />
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium">
+                                      {transaction.description}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                      {transaction.date}
+                                    </p>
+                                  </div>
                                 </div>
-                                <div>
-                                  <p className="text-sm font-medium">{transaction.description}</p>
-                                  <p className="text-xs text-muted-foreground">{transaction.date}</p>
-                                </div>
+                                <p className="text-emerald-500 font-medium">
+                                  +{formatCurrency(transaction.amount)}
+                                </p>
                               </div>
-                              <p className="text-emerald-500 font-medium">+{formatCurrency(transaction.amount)}</p>
-                            </div>
-                          ))}
+                            ))}
                         </div>
                       </ScrollArea>
                     </TabsContent>
                     <TabsContent value="outgoing">
                       <ScrollArea className="h-[320px] px-1">
                         <div className="space-y-2">
-                          {transactions.filter(t => t.type === 'debit').map((transaction) => (
-                            <div key={transaction.id} className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors">
-                              <div className="flex items-center gap-3">
-                                <div className="p-2 rounded-full bg-rose-500/10">
-                                  <ArrowLeftIcon className="h-4 w-4 text-rose-500" />
+                          {transactions
+                            .filter((t) => t.type === "debit")
+                            .map((transaction) => (
+                              <div
+                                key={transaction.id}
+                                className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="p-2 rounded-full bg-rose-500/10">
+                                    <ArrowLeftIcon className="h-4 w-4 text-rose-500" />
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium">
+                                      {transaction.description}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                      {transaction.date}
+                                    </p>
+                                  </div>
                                 </div>
-                                <div>
-                                  <p className="text-sm font-medium">{transaction.description}</p>
-                                  <p className="text-xs text-muted-foreground">{transaction.date}</p>
-                                </div>
+                                <p className="text-rose-500 font-medium">
+                                  -{formatCurrency(transaction.amount)}
+                                </p>
                               </div>
-                              <p className="text-rose-500 font-medium">-{formatCurrency(transaction.amount)}</p>
-                            </div>
-                          ))}
+                            ))}
                         </div>
                       </ScrollArea>
                     </TabsContent>
                   </Tabs>
                 </CardContent>
                 <CardFooter className="border-t pt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-                  <p className="text-sm text-muted-foreground">Showing 5 of 24 transactions</p>
-                  <Button className='hover:bg-white/20 hover:text-white text-black' variant={'secondary'} size="sm">View All Transactions</Button>
+                  <p className="text-sm text-muted-foreground">
+                    Showing 5 of 24 transactions
+                  </p>
+                  <Link href={'/transactions'}>
+                    <Button
+                      className="hover:bg-white/20 hover:text-white text-black"
+                      variant={"secondary"}
+                      size="sm"
+                    >
+                      View All Transactions
+                    </Button>
+                  </Link>
                 </CardFooter>
               </Card>
-
             </div>
 
             {/* Sidebar */}
             <div className="space-y-8">
-              <Card className={'bg-black text-black border-border/40'}>
+              <Card className={"bg-black text-black border-border/40"}>
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-center text-white">Quick Actions</CardTitle>
+                  <CardTitle className="text-center text-white">
+                    Quick Actions
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <Button className="w-full justify-start hover:bg-white/20 hover:text-white" variant="secondary">
-                    <WalletIcon className="mr-2 h-4 w-4" /> Transfer Money
-                  </Button>
-                  <Button className="w-full justify-start hover:bg-white/20 hover:text-white" variant="secondary">
-                    <PlusIcon className="mr-2 h-4 w-4" /> Add Funds
-                  </Button>
-                  <Button className="w-full justify-start hover:bg-white/20 hover:text-white" variant="secondary">
-                    <CreditCardIcon className="mr-2 h-4 w-4" /> Pay Bills
-                  </Button>
-                  <Button className="w-full justify-start hover:bg-white/20 hover:text-white" variant="secondary">
-                    <TrendingUpIcon className="mr-2 h-4 w-4" /> Investments
-                  </Button>
+                <CardContent className="space-y-3 flex flex-col">
+                  <Link href={"/transfer-money"} className="space-y-3">
+                    <Button
+                      className="w-full justify-start hover:bg-white/20 hover:text-white space-y"
+                      variant="secondary"
+                    >
+                      <WalletIcon className="mr-2 h-4 w-4" /> Transfer Money
+                    </Button>
+                  </Link>
+                  <Link href={"/add-fund"}>
+                    <Button
+                      className="w-full justify-start hover:bg-white/20 hover:text-white"
+                      variant="secondary"
+                    >
+                      <PlusIcon className="mr-2 h-4 w-4" /> Add Funds
+                    </Button>
+                  </Link>
+                  <Link href={"/pay-bills"}>
+                    <Button
+                      className="w-full justify-start hover:bg-white/20 hover:text-white"
+                      variant="secondary"
+                    >
+                      <CreditCardIcon className="mr-2 h-4 w-4" /> Pay Bills
+                    </Button>
+                  </Link>
+                  <Link href={"/investments"}>
+                    <Button
+                      className="w-full justify-start hover:bg-white/20 hover:text-white"
+                      variant="secondary"
+                    >
+                      <TrendingUpIcon className="mr-2 h-4 w-4" /> Investments
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
 
-              <Card className={'bg-black text-card-white border-border/40'}>
+              <Card className={"bg-black text-card-white border-border/40"}>
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-center">Spending Breakdown</CardTitle>
+                  <CardTitle className="text-center">
+                    Spending Breakdown
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
@@ -296,7 +441,8 @@ function Dashboard() {
                 </CardContent>
                 <CardFooter className="flex justify-center pt-2">
                   <Button variant="ghost" size="sm" className="w-full">
-                    <PieChartIcon className="mr-2 h-4 w-4" /> View Detailed Report
+                    <PieChartIcon className="mr-2 h-4 w-4" /> View Detailed
+                    Report
                   </Button>
                 </CardFooter>
               </Card>
@@ -308,4 +454,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard
+export default Dashboard;
