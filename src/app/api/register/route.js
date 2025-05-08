@@ -17,8 +17,8 @@ export async function POST(request) {
       );
     }
 
-    const existingUser = await db.query.users.findFirst({ where:eq(schema.users.email,email) });
-    if (existingUser) {
+    const existingUser = await db.select().from(schema.users).where(eq(schema.users.email,email))
+    if (existingUser.length !=0) {
       console.log("existing user", existingUser);
       return NextResponse.json(
         { message: "User already exists" },

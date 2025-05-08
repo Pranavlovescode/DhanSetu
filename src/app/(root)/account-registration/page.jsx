@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,12 +15,34 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserAccountCreation } from "@/utils/apis/accountCreation";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 function UserAccountRegistration() {
   const [panNumber, setPanNumber] = useState("");
   const [balance, setBalance] = useState(0);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+
+  const { user, isSignedIn } = useUser();
+  console.log(user);
+  useEffect(() => {
+    const saveUser = async () => {
+      if (isSignedIn && user) {
+        // setIsLoading(true);
+        const response = await Auth.signup(
+          user.fullName,
+          user.primaryEmailAddress.emailAddress,
+          user.id
+        );
+        if (response) {
+          // setIsLoading(false);
+          console.log("api response", response);
+          // router.push("/");
+        }
+      }
+    };
+    saveUser();
+  }, [isSignedIn, user]);
 
   const handleAccountCreation = async (e) => {
     try {

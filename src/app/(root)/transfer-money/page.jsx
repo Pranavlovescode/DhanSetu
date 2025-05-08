@@ -54,15 +54,15 @@ export default function TransferMoney() {
     const fetchUsers = async () => {
       try {
         setCurrentUserData(user);
-
+        console.log("current user", user);
         const response = await axios.get("/api/user-accounts/all");
         if (response.data.users) {
-            console.log(response.data.users)
+          console.log(response.data.users);
           // Filter out current user from the list
           const filteredUsers = response.data.users.filter(
-            (user) =>
-              user.users.id !== currentUserData?.id &&
-              user.user_bank_accounts?.account_id
+            (current_user) =>
+              current_user.users.id !== user?.id &&
+              current_user.user_bank_accounts?.account_id
           );
           setUsers(filteredUsers);
           setFilteredUsers(filteredUsers);
