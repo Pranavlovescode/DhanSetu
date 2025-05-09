@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { UserAccountCreation } from "@/utils/apis/accountCreation";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { Auth } from "@/utils/apis/auth";
 
 function UserAccountRegistration() {
   const [panNumber, setPanNumber] = useState("");

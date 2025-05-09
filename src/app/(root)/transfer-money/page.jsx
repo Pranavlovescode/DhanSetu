@@ -47,6 +47,7 @@ export default function TransferMoney() {
   const [currentUserData, setCurrentUserData] = useState(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const router = useRouter();
+  const [desc,setDesc] = useState("")
 
   const { user } = useUser();
   // Fetch all users
@@ -66,6 +67,7 @@ export default function TransferMoney() {
           );
           setUsers(filteredUsers);
           setFilteredUsers(filteredUsers);
+          // toast("User fetched successfully");
         }
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -103,11 +105,7 @@ export default function TransferMoney() {
   // Handle transfer
   const handleTransfer = async () => {
     if (!selectedUser || !amount || amount <= 0) {
-      toast({
-        title: "Invalid input",
-        description: "Please select a user and enter a valid amount",
-        variant: "destructive",
-      });
+      toast("Please select a user and enter a valid amount");
       return;
     }
 
@@ -116,14 +114,12 @@ export default function TransferMoney() {
 
       const response = await axios.post(
         `/api/transactions?senderId=${currentUserData.id}&receiverId=${selectedUser.users.id}`,
-        { amount: parseInt(amount) }
+        { amount: parseInt(amount) ,desc:desc}
       );
 
-      toast({
-        title: "Success",
-        description: "Money transferred successfully!",
-        variant: "default",
-      });
+      if (response.status==201) {        
+        toast("Money transferred successfully!");
+      }
 
       // Reset form
       setSelectedUser(null);
@@ -133,13 +129,10 @@ export default function TransferMoney() {
       // router.push('/dashboard');
     } catch (error) {
       console.error("Transaction error:", error);
-      toast({
-        title: "Transaction failed",
-        description:
-          error.response?.data?.message ||
-          "An error occurred during the transaction",
-        variant: "destructive",
-      });
+      toast(
+        error.response?.data?.message ||
+          "An error occurred during the transaction"
+      );
     } finally {
       setLoading(false);
     }
@@ -275,6 +268,17 @@ export default function TransferMoney() {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               min="1"
+            />
+          </div>
+          {/* Description */}
+          <div className="space-y-2">
+            <Label htmlFor="amount">Description</Label>
+            <Input
+              id="desc"
+              type="text"
+              placeholder="Enter Description for transaction"
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
             />
           </div>
         </CardContent>

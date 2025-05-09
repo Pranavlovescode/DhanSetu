@@ -44,55 +44,71 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const { amount } = await request.json();
-
+    const { amount,desc } = await request.json();
     const senderId = request.nextUrl.searchParams.get("senderId");
     const receiverId = request.nextUrl.searchParams.get("receiverId");
-
     console.log("senderId", senderId, "receiverId", receiverId);
 
     const current_user = await currentUser();
-
     if (!current_user) {
       console.log("not authorized");
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    } else {
+    }
+
+    // Store the result of the transaction
+    let result;
+
+    try {
       await db.transaction(async (tx) => {
         const balance = await tx
           .select({ balance: schema.userBankAccounts.balance })
           .from(schema.userBankAccounts)
           .where(eq(schema.userBankAccounts.account_holder, senderId));
+        
         if (balance[0].balance < amount) {
+          // Set result and exit transaction with rollback
+          result = { message: "Transaction aborted due to low balance", status: 401 };
           tx.rollback();
-          return NextResponse.json(
-            { message: "Transaction aborted due to low balance" },
-            { status: 401 }
-          );
-        } else {
-          // deducting the amount from sender's account
-          await tx
-            .update(schema.userBankAccounts)
-            .set({ balance: sql`${schema.userBankAccounts.balance}-${amount}` })
-            .where(eq(schema.userBankAccounts.account_holder, senderId));
-          // crediting the amount to receiver's account
-          await tx
-            .update(schema.userBankAccounts)
-            .set({ balance: sql`${schema.userBankAccounts.balance}+${amount}` })
-            .where(eq(schema.userBankAccounts.account_holder, receiverId));
-          // adding the transaction in transaction table
-          await tx
-            .insert(schema.userTransactions)
-            .values({ sender: senderId, receiver: receiverId, amount: amount });
-          return NextResponse.json(
-            { message: "Transaction successful" },
-            { status: 201 }
-          );
+          return;
         }
+
+        // deducting the amount from sender's account
+        await tx
+          .update(schema.userBankAccounts)
+          .set({ balance: sql`${schema.userBankAccounts.balance}-${amount}` })
+          .where(eq(schema.userBankAccounts.account_holder, senderId));
+        
+        // crediting the amount to receiver's account
+        await tx
+          .update(schema.userBankAccounts)
+          .set({ balance: sql`${schema.userBankAccounts.balance}+${amount}` })
+          .where(eq(schema.userBankAccounts.account_holder, receiverId));
+        
+        // adding the transaction in transaction table
+        await tx
+          .insert(schema.userTransactions)
+          .values({ sender: senderId, receiver: receiverId, amount: amount,description:desc });
+        
+        // Set success result
+        result = { message: "Transaction successful", status: 201 };
       });
+
+      // Return response based on transaction result
+      return NextResponse.json(
+        { message: result.message },
+        { status: result.status }
+      );
+    } catch (txError) {
+      console.error("Transaction error:", txError);
+      return NextResponse.json(
+        { message: "Error during transaction processing" },
+        { status: 500 }
+      );
     }
   } catch (error) {
+    console.error("Route handler error:", error);
     return NextResponse.json(
-      { message: "Some error occured while making transactions" },
+      { message: "Some error occurred while making transactions" },
       { status: 500 }
     );
   }
