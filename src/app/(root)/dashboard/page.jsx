@@ -263,7 +263,7 @@ function Dashboard() {
                                       <ArrowLeftIcon className="h-4 w-4 text-rose-500" />
                                     )}
                                   </div>
-                                  <div>
+                                  <div key={transaction.transaction_id}>
                                     <p className="text-sm font-medium">
                                       {transaction.description}
                                     </p>
@@ -294,7 +294,7 @@ function Dashboard() {
                               .filter((t) => t.receiver === user.id)
                               .map((transaction) => (
                                 <div
-                                  key={transaction.id}
+                                  key={transaction.transaction_id}
                                   className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors"
                                 >
                                   <div className="flex items-center gap-3">
@@ -325,7 +325,7 @@ function Dashboard() {
                               .filter((t) => t.sender === user.id)
                               .map((transaction) => (
                                 <div
-                                  key={transaction.id}
+                                  key={transaction.transaction_id}
                                   className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors"
                                 >
                                   <div className="flex items-center gap-3">
