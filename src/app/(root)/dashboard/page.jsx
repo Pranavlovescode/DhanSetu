@@ -33,6 +33,7 @@ import {
   HelpCircleIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { Transactions } from "@/utils/apis/transactions";
 
 function Dashboard() {
   const { isSignedIn, user } = useUser();
@@ -76,9 +77,16 @@ function Dashboard() {
     },
   ]);
 
+  const fetchUserTransactions = async () => {
+    const response = await Transactions.getUserTransactions(user.id);
+    console.log("The transaction reponse is,", response);
+    setTransactions(response);
+  };
+
   useEffect(() => {
     if (isSignedIn && user) {
       fetchUserAccount();
+      fetchUserTransactions();
     }
   }, [isSignedIn, user]);
 
@@ -226,127 +234,131 @@ function Dashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Tabs defaultValue="all" className="w-full">
-                    <TabsList className="mb-4 grid grid-cols-3 w-full md:w-[360px] mx-auto">
-                      <TabsTrigger value="all">All</TabsTrigger>
-                      <TabsTrigger value="incoming">Incoming</TabsTrigger>
-                      <TabsTrigger value="outgoing">Outgoing</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="all">
-                      <ScrollArea className="h-[320px] px-1">
-                        <div className="space-y-2">
-                          {transactions.map((transaction) => (
-                            <div
-                              key={transaction.id}
-                              className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div
-                                  className={`p-2 rounded-full ${
-                                    transaction.type === "credit"
-                                      ? "bg-emerald-500/10"
-                                      : "bg-rose-500/10"
+                  {transactions.length > 0 ? (
+                    <Tabs defaultValue="all" className="w-full">
+                      <TabsList className="mb-4 grid grid-cols-3 w-full md:w-[360px] mx-auto">
+                        <TabsTrigger value="all">All</TabsTrigger>
+                        <TabsTrigger value="incoming">Incoming</TabsTrigger>
+                        <TabsTrigger value="outgoing">Outgoing</TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="all">
+                        <ScrollArea className="h-[320px] px-1">
+                          <div className="space-y-2">
+                            {transactions.map((transaction) => (
+                              <div
+                                key={transaction.transaction_id}
+                                className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div
+                                    className={`p-2 rounded-full ${
+                                      transaction.receiver === user.id
+                                        ? "bg-emerald-500/10"
+                                        : "bg-rose-500/10"
+                                    }`}
+                                  >
+                                    {transaction.receiver === user.id ? (
+                                      <ArrowRightIcon className="h-4 w-4 text-emerald-500" />
+                                    ) : (
+                                      <ArrowLeftIcon className="h-4 w-4 text-rose-500" />
+                                    )}
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium">
+                                      {transaction.description}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                      {new Date(transaction.timestamp).toDateString()}
+                                    </p>
+                                  </div>
+                                </div>
+                                <p
+                                  className={`font-medium ${
+                                    transaction.receiver === user.id
+                                      ? "text-emerald-500"
+                                      : "text-rose-500"
                                   }`}
                                 >
-                                  {transaction.type === "credit" ? (
-                                    <ArrowRightIcon className="h-4 w-4 text-emerald-500" />
-                                  ) : (
-                                    <ArrowLeftIcon className="h-4 w-4 text-rose-500" />
-                                  )}
-                                </div>
-                                <div>
-                                  <p className="text-sm font-medium">
-                                    {transaction.description}
-                                  </p>
-                                  <p className="text-xs text-muted-foreground">
-                                    {transaction.date}
-                                  </p>
-                                </div>
-                              </div>
-                              <p
-                                className={`font-medium ${
-                                  transaction.type === "credit"
-                                    ? "text-emerald-500"
-                                    : "text-rose-500"
-                                }`}
-                              >
-                                {transaction.type === "credit" ? "+" : "-"}
-                                {formatCurrency(transaction.amount)}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      </ScrollArea>
-                    </TabsContent>
-                    <TabsContent value="incoming">
-                      <ScrollArea className="h-[320px] px-1">
-                        <div className="space-y-2">
-                          {transactions
-                            .filter((t) => t.type === "credit")
-                            .map((transaction) => (
-                              <div
-                                key={transaction.id}
-                                className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors"
-                              >
-                                <div className="flex items-center gap-3">
-                                  <div className="p-2 rounded-full bg-emerald-500/10">
-                                    <ArrowRightIcon className="h-4 w-4 text-emerald-500" />
-                                  </div>
-                                  <div>
-                                    <p className="text-sm font-medium">
-                                      {transaction.description}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                      {transaction.date}
-                                    </p>
-                                  </div>
-                                </div>
-                                <p className="text-emerald-500 font-medium">
-                                  +{formatCurrency(transaction.amount)}
+                                  {transaction.receiver === user.id ? "+" : "-"}
+                                  {formatCurrency(transaction.amount)}
                                 </p>
                               </div>
                             ))}
-                        </div>
-                      </ScrollArea>
-                    </TabsContent>
-                    <TabsContent value="outgoing">
-                      <ScrollArea className="h-[320px] px-1">
-                        <div className="space-y-2">
-                          {transactions
-                            .filter((t) => t.type === "debit")
-                            .map((transaction) => (
-                              <div
-                                key={transaction.id}
-                                className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors"
-                              >
-                                <div className="flex items-center gap-3">
-                                  <div className="p-2 rounded-full bg-rose-500/10">
-                                    <ArrowLeftIcon className="h-4 w-4 text-rose-500" />
+                          </div>
+                        </ScrollArea>
+                      </TabsContent>
+                      <TabsContent value="incoming">
+                        <ScrollArea className="h-[320px] px-1">
+                          <div className="space-y-2">
+                            {transactions
+                              .filter((t) => t.receiver === user.id)
+                              .map((transaction) => (
+                                <div
+                                  key={transaction.id}
+                                  className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-full bg-emerald-500/10">
+                                      <ArrowRightIcon className="h-4 w-4 text-emerald-500" />
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-medium">
+                                        {transaction.description}
+                                      </p>
+                                      <p className="text-xs text-muted-foreground">
+                                        {new Date(transaction.timestamp).toDateString()}
+                                      </p>
+                                    </div>
                                   </div>
-                                  <div>
-                                    <p className="text-sm font-medium">
-                                      {transaction.description}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                      {transaction.date}
-                                    </p>
-                                  </div>
+                                  <p className="text-emerald-500 font-medium">
+                                    +{formatCurrency(transaction.amount)}
+                                  </p>
                                 </div>
-                                <p className="text-rose-500 font-medium">
-                                  -{formatCurrency(transaction.amount)}
-                                </p>
-                              </div>
-                            ))}
-                        </div>
-                      </ScrollArea>
-                    </TabsContent>
-                  </Tabs>
+                              ))}
+                          </div>
+                        </ScrollArea>
+                      </TabsContent>
+                      <TabsContent value="outgoing">
+                        <ScrollArea className="h-[320px] px-1">
+                          <div className="space-y-2">
+                            {transactions
+                              .filter((t) => t.sender === user.id)
+                              .map((transaction) => (
+                                <div
+                                  key={transaction.id}
+                                  className="flex items-center justify-between p-3 rounded-md hover:bg-white/20 transition-colors"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-full bg-rose-500/10">
+                                      <ArrowLeftIcon className="h-4 w-4 text-rose-500" />
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-medium">
+                                        {transaction.description}
+                                      </p>
+                                      <p className="text-xs text-muted-foreground">
+                                        {new Date(transaction.timestamp).toDateString()}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <p className="text-rose-500 font-medium">
+                                    -{formatCurrency(transaction.amount)}
+                                  </p>
+                                </div>
+                              ))}
+                          </div>
+                        </ScrollArea>
+                      </TabsContent>
+                    </Tabs>
+                  ) : (
+                    <div className="text-center">No transaction made till now</div>
+                  )}
                 </CardContent>
                 <CardFooter className="border-t pt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
                   <p className="text-sm text-muted-foreground">
                     Showing 5 of 24 transactions
                   </p>
-                  <Link href={'/transactions'}>
+                  <Link href={"/transactions"}>
                     <Button
                       className="hover:bg-white/20 hover:text-white text-black"
                       variant={"secondary"}

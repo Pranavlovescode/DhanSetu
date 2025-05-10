@@ -1,0 +1,1 @@
+ALTER TABLE "user_transactions" ADD COLUMN "type" text DEFAULT '';

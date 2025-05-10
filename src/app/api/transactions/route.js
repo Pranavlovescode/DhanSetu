@@ -48,8 +48,9 @@ export async function POST(request) {
     const senderId = request.nextUrl.searchParams.get("senderId");
     const receiverId = request.nextUrl.searchParams.get("receiverId");
     console.log("senderId", senderId, "receiverId", receiverId);
-
+    
     const current_user = await currentUser();
+    console.log(current_user.id)
     if (!current_user) {
       console.log("not authorized");
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -87,7 +88,15 @@ export async function POST(request) {
         // adding the transaction in transaction table
         await tx
           .insert(schema.userTransactions)
-          .values({ sender: senderId, receiver: receiverId, amount: amount,description:desc });
+          .values({ sender: senderId, receiver: receiverId, amount: amount,description:desc});
+        // if(senderId === current_user.id){
+          
+        // }
+        // if (receiverId === current_user.id) {
+        //   await tx
+        //   .insert(schema.userTransactions)
+        //   .values({ sender: senderId, receiver: receiverId, amount: amount,description:desc,type:"credit" });          
+        // }
         
         // Set success result
         result = { message: "Transaction successful", status: 201 };
