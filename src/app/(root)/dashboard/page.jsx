@@ -1,7 +1,7 @@
 "use client";
 
 import { UserAccountCreation } from "@/utils/apis/accountCreation";
-import { useUser } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
 import React, { useEffect, useState } from "react";
 import {
   Card,
@@ -34,8 +34,17 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Transactions } from "@/utils/apis/transactions";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 function Dashboard() {
+  const {signOut} = useClerk();
   const { isSignedIn, user } = useUser();
   const [userAccount, setUserAccount] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -128,9 +137,9 @@ function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-background">
+      <div className="flex h-screen items-center justify-center bg-black">
         <div className="space-y-4 text-center">
-          <h2 className="text-2xl font-bold text-foreground">
+          <h2 className="text-2xl font-bold text-white">
             Loading your account...
           </h2>
           <Progress value={80} className="w-60 mx-auto" />
@@ -152,21 +161,37 @@ function Dashboard() {
                 3
               </Badge>
             </Button>
-            <div className="flex items-center gap-2">
-              <Avatar>
-                <AvatarImage
-                  src={user?.imageUrl}
-                  alt={user?.fullName || "User"}
-                />
-                <AvatarFallback>{getInitials()}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium">{user?.fullName}</p>
-                <p className="text-xs text-muted-foreground">
-                  {userAccount?.account_id?.substring(0, 8)}...
-                </p>
-              </div>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="cursor-pointer">
+                <div className="flex items-center gap-2">
+                  <Avatar>
+                    <AvatarImage
+                      src={user?.imageUrl}
+                      alt={user?.fullName || "User"}
+                    />
+                    <AvatarFallback>{getInitials()}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">{user?.fullName}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {userAccount?.account_id?.substring(0, 8)}...
+                    </p>
+                  </div>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Billing</DropdownMenuItem>
+                <DropdownMenuItem>Team</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Button onClick={()=>signOut({redirectUrl:"/"})}>
+                    Logout
+                  </Button>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
@@ -268,7 +293,9 @@ function Dashboard() {
                                       {transaction.description}
                                     </p>
                                     <p className="text-xs text-muted-foreground">
-                                      {new Date(transaction.timestamp).toDateString()}
+                                      {new Date(
+                                        transaction.timestamp
+                                      ).toDateString()}
                                     </p>
                                   </div>
                                 </div>
@@ -306,7 +333,9 @@ function Dashboard() {
                                         {transaction.description}
                                       </p>
                                       <p className="text-xs text-muted-foreground">
-                                        {new Date(transaction.timestamp).toDateString()}
+                                        {new Date(
+                                          transaction.timestamp
+                                        ).toDateString()}
                                       </p>
                                     </div>
                                   </div>
@@ -337,7 +366,9 @@ function Dashboard() {
                                         {transaction.description}
                                       </p>
                                       <p className="text-xs text-muted-foreground">
-                                        {new Date(transaction.timestamp).toDateString()}
+                                        {new Date(
+                                          transaction.timestamp
+                                        ).toDateString()}
                                       </p>
                                     </div>
                                   </div>
@@ -351,7 +382,9 @@ function Dashboard() {
                       </TabsContent>
                     </Tabs>
                   ) : (
-                    <div className="text-center">No transaction made till now</div>
+                    <div className="text-center">
+                      No transaction made till now
+                    </div>
                   )}
                 </CardContent>
                 <CardFooter className="border-t pt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
