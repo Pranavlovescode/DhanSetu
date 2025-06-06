@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 export default function Home() {
   const { user, isSignedIn } = useUser();
-  console.log(user);
+  console.log('user',user);
   // useEffect(() => {
   //   const saveUser = async () => {
   //     if (isSignedIn && user) {

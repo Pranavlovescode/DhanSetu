@@ -1,7 +1,7 @@
 "use client";
 
 import { UserAccountCreation } from "@/utils/apis/accountCreation";
-import { useClerk, useUser } from "@clerk/nextjs";
+import { SignOutButton, useClerk, useUser } from "@clerk/nextjs";
 import React, { useEffect, useState } from "react";
 import {
   Card,
@@ -41,11 +41,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 function Dashboard() {
-  const {signOut} = useClerk();
-  const { isSignedIn, user } = useUser();
+  const { user, isSignedIn } = useUser();
   const [userAccount, setUserAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState([
@@ -135,6 +134,19 @@ function Dashboard() {
       .toUpperCase();
   };
 
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    let interval;
+
+    if (progress < 100) {
+      interval = setInterval(() => {
+        setProgress((prevProgress) => prevProgress + 1);
+      }, 30); // Adjust the increment speed by changing 50ms
+    }
+
+    return () => clearInterval(interval);
+  }, [progress]);
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
@@ -142,7 +154,7 @@ function Dashboard() {
           <h2 className="text-2xl font-bold text-white">
             Loading your account...
           </h2>
-          <Progress value={80} className="w-60 mx-auto" />
+          <Progress value={progress} className="w-60 mx-auto bg-zinc-700 text-white" />
         </div>
       </div>
     );
@@ -186,9 +198,10 @@ function Dashboard() {
                 <DropdownMenuItem>Billing</DropdownMenuItem>
                 <DropdownMenuItem>Team</DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Button onClick={()=>signOut({redirectUrl:"/"})}>
+                  {/* <Button onClick={()=>signOut({redirectUrl:"/"})}>
                     Logout
-                  </Button>
+                  </Button> */}
+                  <SignOutButton />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -242,7 +255,7 @@ function Dashboard() {
                     <div className="text-3xl font-bold">
                       65<span className="text-lg font-normal">%</span>
                     </div>
-                    <Progress value={65} className="mt-3" />
+                    <Progress value={65} className="mt-3 bg-zinc-700" />
                     <p className="text-xs text-muted-foreground mt-2">
                       ₹32,500 of ₹50,000
                     </p>
@@ -460,28 +473,28 @@ function Dashboard() {
                       <p className="text-sm">Shopping</p>
                       <p className="text-sm font-medium">₹4,800</p>
                     </div>
-                    <Progress value={40} className="h-2" />
+                    <Progress value={40} className="h-2 bg-zinc-700" />
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <p className="text-sm">Food & Dining</p>
                       <p className="text-sm font-medium">₹3,600</p>
                     </div>
-                    <Progress value={30} className="h-2" />
+                    <Progress value={30} className="h-2 bg-zinc-700" />
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <p className="text-sm">Entertainment</p>
                       <p className="text-sm font-medium">₹2,400</p>
                     </div>
-                    <Progress value={20} className="h-2" />
+                    <Progress value={20} className="h-2 bg-zinc-700" />
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <p className="text-sm">Bills & Utilities</p>
                       <p className="text-sm font-medium">₹1,200</p>
                     </div>
-                    <Progress value={10} className="h-2" />
+                    <Progress value={10} className="h-2 bg-zinc-700" />
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-center pt-2">
