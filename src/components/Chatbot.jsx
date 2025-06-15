@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { AIChat } from '@/utils/apis/aiChat';
 
 export function Chatbot({ onClose }) {
   const [messages, setMessages] = useState([
@@ -32,6 +33,13 @@ export function Chatbot({ onClose }) {
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
+    const aiResponse = await AIChat.sendMessage(inputValue);
+    // if (aiResponse.status !== 200) {  
+    //   console.error("Error sending message:", aiResponse);
+    //   return;
+    // }
+
+
     const userMessage = {
       id: Date.now().toString(),
       text: inputValue,
@@ -47,7 +55,7 @@ export function Chatbot({ onClose }) {
     setTimeout(() => {
       const botMessage = {
         id: (Date.now() + 1).toString(),
-        text: 'Thanks for your message! This is a demo response.',
+        text: aiResponse || "I'm not sure how to respond to that.",
         isBot: true,
         timestamp: new Date(),
       };
