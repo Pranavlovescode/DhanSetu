@@ -18,7 +18,7 @@ export async function POST(request) {
         .from(schema.userBankAccounts)
         .where(eq(schema.userBankAccounts.account_holder, current_user.id));
       console.log(existing_account)
-      if (existing_account.length!=0) {
+      if (existing_account.length != 0) {
         return NextResponse.json(
           { message: "Account already exists for current user" },
           { status: 400 }

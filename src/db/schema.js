@@ -32,3 +32,14 @@ export const userTransactions = pgTable('user_transactions',{
   timestamp:timestamp().defaultNow(),
   amount:integer('amount').notNull().default(0)
 })
+
+export const investmentProfile = pgTable('user_investment_profile', {
+  profile_id: uuid('profile_id').defaultRandom().primaryKey(),
+  tolerance_level: text('tolerance_level').default(''),
+  experience: text('experience').default(''),
+  goal: text('goal').default(''),
+  timeHorizon: text('time_horizon').default(''),
+  monthlyInvestmentAmount: integer('monthly_investment_amount'),
+  sector: text('sector').array(),
+  user_id: text('user_id').references(() => users.id)
+});
