@@ -45,5 +45,19 @@ export const RiskProfile = {
     } catch (error) {
       throw error.response.data.message
     }
+  },
+  getAiRecommendation:async(riskProfile)=>{
+    try {
+      console.log(riskProfile)
+      const response = await axios.post(`/api/ai/recommendation`,riskProfile,{
+        headers: {
+          "Content-Type": "application/json"
+        },
+        withCredentials: true,
+      });
+      return response;
+    } catch (error) {
+      throw error.response.data.message
+    }
   }
 };

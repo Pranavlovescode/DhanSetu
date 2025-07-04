@@ -84,13 +84,13 @@ export default function Investments() {
         );
         setInvestmentProfile({
           ...investmentProfile,
-          riskTolerance: response.data.riskProfile[0].tolerance_level,
-          investmentGoals: response.data.riskProfile[0].goal,
-          timeHorizon: response.data.riskProfile[0].timeHorizon,
+          riskTolerance: response.data.riskProfile[0]?.tolerance_level,
+          investmentGoals: response.data.riskProfile[0]?.goal,
+          timeHorizon: response.data.riskProfile[0]?.timeHorizon,
           monthlyInvestment:
-            response.data.riskProfile[0].monthlyInvestmentAmount,
-          experience: response.data.riskProfile[0].experience,
-          preferredSectors: response.data.riskProfile[0].sector.map((s) =>
+            response.data.riskProfile[0]?.monthlyInvestmentAmount,
+          experience: response.data.riskProfile[0]?.experience,
+          preferredSectors: response.data.riskProfile[0]?.sector.map((s) =>
             s.toLowerCase()
           ),
           totalInvested:
@@ -108,9 +108,28 @@ export default function Investments() {
     }
   };
 
+  const getAIRecommendation = async () => {
+    try {
+      const response = await RiskProfile.getAiRecommendation(investmentProfile);
+      if (response.status === 200) {
+        console.log("AI Recommendation:", response.data.message);
+        // alert(response.data.message);
+      } else {
+        console.error("Error fetching AI recommendation:", response.data);
+        // alert("Failed to fetch AI recommendation. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error fetching AI recommendation:", error);
+      // alert("An error occurred while fetching AI recommendation.");
+    }
+  };
+
   useEffect(() => {
     fetchUserAccount();
     fetchRiskProfile();
+    if(user){
+      getAIRecommendation();
+    }
   }, []);
 
   const handleSaveProfile = () => {
